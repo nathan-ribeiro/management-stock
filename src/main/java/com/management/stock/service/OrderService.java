@@ -24,7 +24,7 @@ public class OrderService {
     public void processOrder(OrderDTO orderDTO){
 
         try {
-            for (ProductDTO productDTO : orderDTO.getProductList()) {
+            for (ProductDTO productDTO : orderDTO.getProducts()) {
                 var productFound = productService.findProduct(productDTO.getId());
 
                 var finalQuantity = productFound.getQuantity() - productDTO.getQuantity();
@@ -44,7 +44,7 @@ public class OrderService {
             rabbitTemplate.convertAndSend("message.communication", MessageDTO.builder()
                     .email(orderDTO.getEmail())
                     .name(orderDTO.getName())
-                    .orderID(orderDTO.getOrderID())
+                    .orderID(orderDTO.getId())
                     .status(PROCESSED_ORDER)
                     .build());
 
@@ -53,7 +53,7 @@ public class OrderService {
             rabbitTemplate.convertAndSend("message.communication", MessageDTO.builder()
                     .email(orderDTO.getEmail())
                     .name(orderDTO.getName())
-                    .orderID(orderDTO.getOrderID())
+                    .orderID(orderDTO.getId())
                     .status(e.getMessage())
                     .build());
         }

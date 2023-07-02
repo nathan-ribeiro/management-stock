@@ -14,7 +14,7 @@ public class MessageDTO implements Serializable {
 
     private String email;
     private String name;
-    private Integer orderID;
+    private String orderID;
     private String status;
 
 }

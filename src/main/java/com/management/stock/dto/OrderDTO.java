@@ -13,9 +13,9 @@ import java.util.List;
 @ToString
 public class OrderDTO implements Serializable {
 
-    private Integer orderID;
+    private String id;
     private String email;
     private String name;
-    private List<ProductDTO> productList;
+    private List<ProductDTO> products;
 
 }
