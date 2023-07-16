@@ -4,9 +4,11 @@ import com.management.stock.controller.request.CreateProductDTO;
 import com.management.stock.controller.request.UpdateProductDTO;
 import com.management.stock.entity.ProductEntity;
 import com.management.stock.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ProductService {
 
@@ -39,8 +41,6 @@ public class ProductService {
                 .build();
 
         return productRepository.save(productEntity);
-
-
     }
 
     public ProductEntity findProduct(Long productId){

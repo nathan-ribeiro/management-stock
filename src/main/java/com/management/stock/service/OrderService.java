@@ -5,10 +5,12 @@ import com.management.stock.dto.MessageDTO;
 import com.management.stock.dto.OrderDTO;
 import com.management.stock.dto.ProductDTO;
 import com.management.stock.exception.QuantityException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class OrderService {
 
@@ -22,6 +24,8 @@ public class OrderService {
     private final String QUANTITY_ERROR = "The quantity of product ?1 exceeds the quantity in stock";
 
     public void processOrder(OrderDTO orderDTO){
+
+        log.info("OrderService - processOrder START");
 
         try {
             for (ProductDTO productDTO : orderDTO.getProducts()) {
@@ -41,13 +45,16 @@ public class OrderService {
 
             }
 
-            rabbitTemplate.convertAndSend("message.communication", MessageDTO.builder()
+            var message = MessageDTO.builder()
                     .email(orderDTO.getEmail())
                     .name(orderDTO.getName())
                     .orderID(orderDTO.getId())
                     .status(PROCESSED_ORDER)
-                    .build());
+                    .build();
 
+            log.info("Sending message to: message.communication, message: " + message);
+
+            rabbitTemplate.convertAndSend("message.communication", message);
 
         } catch (QuantityException e) {
             rabbitTemplate.convertAndSend("message.communication", MessageDTO.builder()
@@ -56,7 +63,11 @@ public class OrderService {
                     .orderID(orderDTO.getId())
                     .status(e.getMessage())
                     .build());
+
+            log.info("Sending message to: message.communication, Quantity exception");
         }
+
+        log.info("OrderService - processOrder END");
 
     }
 }
